@@ -1,0 +1,1 @@
+export './manga/manga.dart';

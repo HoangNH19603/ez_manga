@@ -1,0 +1,17 @@
+name: ez_manga
+description: A starting point for Dart libraries or applications.
+version: 1.0.0
+# repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.5.0-131.0.dev
+
+# Add regular dependencies here.
+dependencies:
+  html_main_element: ^2.1.0
+  http: ^1.2.1
+  # path: ^1.8.0
+
+dev_dependencies:
+  lints: ^3.0.0
+  test: ^1.24.0
