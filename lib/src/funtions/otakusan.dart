@@ -1,4 +1,4 @@
-
+import '../model/model.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart';
@@ -6,8 +6,24 @@ import 'package:html/dom.dart';
 // import 'dart:convert';
 // import 'dart:async';
 
-class Nettruyen {
+class OtakuSan {
   static const String _otakusan = 'otakusan.net';
+  // static void chapterCrawl(Uri chapter) async {
+  //   final Document doc = await _loadDocument(chapter);
+  //   // var list = getResource(doc: doc, query: '.image-wraper img', attribute: 'src');
+  //   final List<Element> elements = doc.querySelectorAll('.image-wraper img');
+  //   final List<String?> attributes = _getAttributes(elements: elements, attribute: 'src');
+  //   attributes.forEach(print);
+  // }
+
+  static List<String> _getImagesSource(Document doc) {
+    // var list = getResource(doc: doc, query: '.image-wraper img', attribute: 'src');
+    final List<Element> elements = doc.querySelectorAll('.image-wraper img');
+    final List<String> images = _getAttributes(elements: elements, attribute: 'src');
+    // images.forEach(print);
+    return images;
+  }
+
   static void crawl() async {
     final Uri uri = Uri.https(_otakusan, '/chapter/1758786/kakkou-no-iinazuke-chap-126');
     final Document doc = await _loadDocument(uri);
@@ -17,7 +33,7 @@ class Nettruyen {
     attributes.forEach(print);
   }
 
-  static void search(String name) async {
+  static Future<List<Manga>> search(String name) async {
     final Uri searchUri = Uri.https(_otakusan, '/Home/Search', {
       'search': name,
     });
@@ -27,16 +43,15 @@ class Nettruyen {
     final List<Element> elements = doc.querySelectorAll('.mdl-card--expand.tag a');
     // final List<String?> list = _getAttributes(elements: elements, attribute: 'href');
     // list.forEach(print);
-    _getMangaDetail(elements);
     // print(list.length);
-    // TODO: complete this!!!
+    return _toMangaList(elements);
   }
 
-  static List<String?> _getAttributes({required List<Element> elements, required String attribute}) {
-    final List<String?> resources = [];
+  static List<String> _getAttributes({required List<Element> elements, required String attribute}) {
+    final List<String> resources = [];
     // add attributes
     for (Element e in elements) {
-      resources.add(e.attributes[attribute]);
+      resources.add(e.attributes[attribute] ?? "Content is not loaded from document!");
     } //  https://stackoverflow.com/questions/66581833/how-to-get-attribute-value-from-attribute-name-in-dart-eventvalidation-from-htm
     return resources;
   }
@@ -55,20 +70,19 @@ class Nettruyen {
   //   return resources;
   // }
 
-  static void _getMangaDetail(List<Element> elements) {
-    final List<Map<String, dynamic>> mangas = [];
+  static List<Manga> _toMangaList(List<Element> elements) {
+    final List<Manga> list = [];
     for (Element e in elements) {
-      final Map<String, dynamic> manga = {};
       // e.getElementsByTagName('a').forEach((e) => e.attributes['href']);
       // print((e.attributes['title']));
-      manga['name'] = e.attributes['title'];
+      String name = e.attributes['title'] ?? "Name is not loaded!";
       // print(_otakusan + e.attributes['href']!);
-      manga['uri'] = Uri.https(_otakusan, e.attributes['href']!);
-      manga['img'] = e.querySelector('img')!.attributes['src'];
-      mangas.add(manga);
+      Uri source = Uri.https(_otakusan, e.attributes['href']!);
+      String img = e.querySelector('img')!.attributes['src'] ?? "Image is not loaded!";
+      list.add(Manga(name: name, source: source, img: img));
     }
-    // TODO: Complete this too!
-    mangas.forEach(print);
+    // mangas.forEach(print);
+    return list;
   }
 
   static Future<Document> _loadDocument(Uri uri) async {

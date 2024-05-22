@@ -1,2 +1,2 @@
-export 'nettruyen.dart';
+export 'otakusan.dart';
 export 'fetch_mangadex.dart';
