@@ -33,7 +33,7 @@ class OtakuSan {
     attributes.forEach(print);
   }
 
-  static Future<List<Manga>> search(String name) async {
+  static Future<List<MangaBase>> search(String name) async {
     final Uri searchUri = Uri.https(_otakusan, '/Home/Search', {
       'search': name,
     });
@@ -70,8 +70,8 @@ class OtakuSan {
   //   return resources;
   // }
 
-  static List<Manga> _toMangaList(List<Element> elements) {
-    final List<Manga> list = [];
+  static List<MangaBase> _toMangaList(List<Element> elements) {
+    final List<MangaBase> list = [];
     for (Element e in elements) {
       // e.getElementsByTagName('a').forEach((e) => e.attributes['href']);
       // print((e.attributes['title']));
@@ -79,9 +79,9 @@ class OtakuSan {
       // print(_otakusan + e.attributes['href']!);
       Uri source = Uri.https(_otakusan, e.attributes['href']!);
       String img = e.querySelector('img')!.attributes['src'] ?? "Image is not loaded!";
-      list.add(Manga(name: name, source: source, img: img));
+      list.add(MangaBase(name: name, source: source, img: img));
     }
-    // mangas.forEach(print);
+    // list.forEach((m) => print(m.source));
     return list;
   }
 
@@ -115,5 +115,9 @@ class OtakuSan {
     // });  // https://stackoverflow.com/questions/27808848/retrieving-the-response-body-from-an-httpclientresponse
 
     return html;
+  }
+
+  static void _loadDetailManga({required MangaBase base}) async {
+    final Document doc = await _loadDocument(base.source);
   }
 }

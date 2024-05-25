@@ -1,1 +1,1 @@
-export './manga/manga.dart';
+export 'manga/manga_base.dart';
