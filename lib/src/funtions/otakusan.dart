@@ -19,9 +19,8 @@ class OtakuSan {
   static List<String> _getImagesSource(Document doc) {
     // var list = getResource(doc: doc, query: '.image-wraper img', attribute: 'src');
     final List<Element> elements = doc.querySelectorAll('.image-wraper img');
-    final List<String> images = _getAttributes(elements: elements, attribute: 'src');
+    return _getAttributes(elements: elements, attribute: 'src');
     // images.forEach(print);
-    return images;
   }
 
   static void crawl() async {
@@ -48,12 +47,13 @@ class OtakuSan {
   }
 
   static List<String> _getAttributes({required List<Element> elements, required String attribute}) {
-    final List<String> resources = [];
+    // final List<String> resources = [];
     // add attributes
-    for (Element e in elements) {
-      resources.add(e.attributes[attribute] ?? "Content is not loaded from document!");
-    } //  https://stackoverflow.com/questions/66581833/how-to-get-attribute-value-from-attribute-name-in-dart-eventvalidation-from-htm
-    return resources;
+    // for (Element e in elements) {
+    //   resources.add(e.attributes[attribute] ?? "Content is not loaded from document!");
+    // } //  https://stackoverflow.com/questions/66581833/how-to-get-attribute-value-from-attribute-name-in-dart-eventvalidation-from-htm
+    // return resources;
+    return elements.map((e) => e.attributes[attribute] ?? "Content is not loaded from document!").toList();
   }
 
   // static List<String?> getResource({required Document doc, required String query, String? attribute}) {
@@ -81,7 +81,12 @@ class OtakuSan {
       String img = e.querySelector('img')!.attributes['src'] ?? "Image is not loaded!";
       list.add(MangaBase(name: name, source: source, img: img));
     }
-    // list.forEach((m) => print(m.source));
+    list.forEach((m) => print(m.source));
+    // return elements.map((e) => {
+    //   MangaBase(name: e.attributes['title'] ?? "Name is not loaded!",
+    //   source: Uri.https(_otakusan, e.attributes['href'] ?? "Null"),
+    //   img: e.querySelector('img')!.attributes['src'] ?? "Image is not loaded!");
+    // }).toList();
     return list;
   }
 
@@ -117,13 +122,10 @@ class OtakuSan {
     return html;
   }
 
-  static Future<List<String>> loadDetailManga({required MangaBase base}) async {
+  static Future<List<Uri>> loadChapters({required MangaBase base}) async {
     final Document doc = await _loadDocument(base.source);
     final List<Element> elements = doc.querySelectorAll('.thrilldown');
-    // elements.forEach(print);
-    // print(base.source);
-    // print(elements);
-    final List<String> src = _getAttributes(elements: elements, attribute: 'href');
-    return src;
+    final List<String> href = _getAttributes(elements: elements, attribute: 'href');
+    return href.map((m) => Uri.https(_otakusan, m)).toList();
   }
 }
