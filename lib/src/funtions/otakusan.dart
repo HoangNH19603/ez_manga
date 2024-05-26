@@ -117,7 +117,13 @@ class OtakuSan {
     return html;
   }
 
-  static void _loadDetailManga({required MangaBase base}) async {
+  static Future<List<String>> loadDetailManga({required MangaBase base}) async {
     final Document doc = await _loadDocument(base.source);
+    final List<Element> elements = doc.querySelectorAll('.thrilldown');
+    // elements.forEach(print);
+    // print(base.source);
+    // print(elements);
+    final List<String> src = _getAttributes(elements: elements, attribute: 'href');
+    return src;
   }
 }
