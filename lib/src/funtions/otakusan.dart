@@ -1,3 +1,5 @@
+import 'package:ez_manga/src/model/manga/manga.dart';
+
 import '../model/model.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
@@ -10,24 +12,25 @@ class OtakuSan {
   static const String _otakusan = 'otakusan.net';
   // static void chapterCrawl(Uri chapter) async {
   //   final Document doc = await _loadDocument(chapter);
-  //   // var list = _searchAttributesFromDoc(doc: doc, query: '.image-wraper img', attribute: 'src');
+  //   // var list = getResource(doc: doc, query: '.image-wraper img', attribute: 'src');
   //   final List<Element> elements = doc.querySelectorAll('.image-wraper img');
   //   final List<String?> attributes = _getAttributes(elements: elements, attribute: 'src');
   //   attributes.forEach(print);
   // }
 
-  // static List<String> _getImagesSource(Document doc) {
-  //   final List<Element> elements = doc.querySelectorAll('.image-wraper img');
-  //   return _getAttributes(elements: elements, attribute: 'src');
-  // }
+  static List<String> _getImagesSource(Document doc) {
+    // var list = getResource(doc: doc, query: '.image-wraper img', attribute: 'src');
+    final List<Element> elements = doc.querySelectorAll('.image-wraper img');
+    return _getAttributes(elements: elements, attribute: 'src');
+    // images.forEach(print);
+  }
 
   static void crawl(Uri uri) async {
-    // final Uri uri = Uri.https(_otakusan, '/chapter/1758786/kakkou-no-iinazuke-chap-126');
-    // final Document doc = await _loadDocument(manga.source);
+    final Uri uri = Uri.https(_otakusan, '/chapter/1758786/kakkou-no-iinazuke-chap-126');
     final Document doc = await _loadDocument(uri);
-    final List<String> attributes = _searchAttributesFromDoc(doc: doc, query: '.image-wraper img', attribute: 'src');
-    // final List<Element> elements = doc.querySelectorAll('.image-wraper img');
-    // final List<String> attributes = _getAttributes(elements: elements, attribute: 'src');
+    // var list = getResource(doc: doc, query: '.image-wraper img', attribute: 'src');
+    final List<Element> elements = doc.querySelectorAll('.image-wraper img');
+    final List<String?> attributes = _getAttributes(elements: elements, attribute: 'src');
     attributes.forEach(print);
   }
 
@@ -37,7 +40,7 @@ class OtakuSan {
     });
     // print(searchUri);
     final Document doc = await _loadDocument(searchUri);
-    // final List<String?> list = _searchAttributesFromDoc(doc: doc, query: '.mdl-card--expand.tag', attribute: 'href');
+    // final List<String?> list = getResource(doc: doc, query: '.mdl-card--expand.tag', attribute: 'href');
     final List<Element> elements = doc.querySelectorAll('.mdl-card--expand.tag a');
     // final List<String?> list = _getAttributes(elements: elements, attribute: 'href');
     // list.forEach(print);
@@ -55,13 +58,22 @@ class OtakuSan {
     return elements.map((e) => e.attributes[attribute] ?? "Content is not loaded from document!").toList();
   }
 
-  static List<String> _searchAttributesFromDoc({required Document doc, required String query, required String attribute}) {
-    final List<Element> elements = doc.querySelectorAll(query);
-    return _getAttributes(elements: elements, attribute: attribute);
-  }
+  // static List<String?> getResource({required Document doc, required String query, String? attribute}) {
+  //   final List<String?> resources = [];
+  //   final List<Element> elements = doc.querySelectorAll(query);
+  //   // log attributes
+  //   for (Element e in elements) {
+  //     // e.getElementsByTagName('img').forEach((t) {
+  //     //   print(t.attributes['src']);
+  //     // });
+  //     // print(e.attributes['src']);
+  //     resources.add(e.attributes[attribute]);
+  //   } //  https://stackoverflow.com/questions/66581833/how-to-get-attribute-value-from-attribute-name-in-dart-eventvalidation-from-htm
+  //   return resources;
+  // }
 
   static List<MangaBase> _toMangaList(List<Element> elements) {
-    final List<MangaBase> list = [];
+    final List<MangaBase> list = <MangaBase>[];
     for (Element e in elements) {
       // e.getElementsByTagName('a').forEach((e) => e.attributes['href']);
       // print((e.attributes['title']));
@@ -112,11 +124,23 @@ class OtakuSan {
     return html;
   }
 
-  static Future<List<Uri>> loadChapters({required MangaBase base}) async {
+  static Future<List<Chapter>> loadChapters({required MangaBase base}) async {
     final Document doc = await _loadDocument(base.source);
-    // final List<Element> elements = doc.querySelectorAll('.thrilldown');
+    final List<Element> elements = doc.querySelectorAll('.thrilldown');
+    List<Chapter> chapters = <Chapter>[];
+    for (Element e in elements) {
+      String name = e.text;
+      Uri uri = Uri.https(_otakusan, e.attributes['href']!);
+      chapters.add(Chapter(name: name, uri: uri));
+    }
     // final List<String> href = _getAttributes(elements: elements, attribute: 'href');
-    final List<String> href = _searchAttributesFromDoc(doc: doc, query: '.thrilldown', attribute: 'href');
-    return href.map((m) => Uri.https(_otakusan, m)).toList();
+    // return href.map((m) => Uri.https(_otakusan, m)).toList();
+    return chapters;
   }
+  // static Future<List<Uri>> loadChapters({required MangaBase base}) async {
+  //   final Document doc = await _loadDocument(base.source);
+  //   final List<Element> elements = doc.querySelectorAll('.thrilldown');
+  //   final List<String> href = _getAttributes(elements: elements, attribute: 'href');
+  //   return href.map((m) => Uri.https(_otakusan, m)).toList();
+  // }
 }
