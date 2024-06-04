@@ -26,7 +26,7 @@ class OtakuSan {
   }
 
   static void crawl(Uri uri) async {
-    final Uri uri = Uri.https(_otakusan, '/chapter/1758786/kakkou-no-iinazuke-chap-126');
+    // final Uri uri = Uri.https(_otakusan, '/chapter/1758786/kakkou-no-iinazuke-chap-126');
     final Document doc = await _loadDocument(uri);
     // var list = getResource(doc: doc, query: '.image-wraper img', attribute: 'src');
     final List<Element> elements = doc.querySelectorAll('.image-wraper img');
@@ -35,26 +35,13 @@ class OtakuSan {
   }
 
   static Future<List<MangaBase>> search(String name) async {
-    final Uri searchUri = Uri.https(_otakusan, '/Home/Search', {
-      'search': name,
-    });
-    // print(searchUri);
+    final Uri searchUri = Uri.https(_otakusan, '/Home/Search', {'search': name});
     final Document doc = await _loadDocument(searchUri);
-    // final List<String?> list = getResource(doc: doc, query: '.mdl-card--expand.tag', attribute: 'href');
     final List<Element> elements = doc.querySelectorAll('.mdl-card--expand.tag a');
-    // final List<String?> list = _getAttributes(elements: elements, attribute: 'href');
-    // list.forEach(print);
-    // print(list.length);
     return _toMangaList(elements);
   }
 
   static List<String> _getAttributes({required List<Element> elements, required String attribute}) {
-    // final List<String> resources = [];
-    // add attributes
-    // for (Element e in elements) {
-    //   resources.add(e.attributes[attribute] ?? "Content is not loaded from document!");
-    // } //  https://stackoverflow.com/questions/66581833/how-to-get-attribute-value-from-attribute-name-in-dart-eventvalidation-from-htm
-    // return resources;
     return elements.map((e) => e.attributes[attribute] ?? "Content is not loaded from document!").toList();
   }
 
@@ -73,23 +60,18 @@ class OtakuSan {
   // }
 
   static List<MangaBase> _toMangaList(List<Element> elements) {
-    final List<MangaBase> list = <MangaBase>[];
-    for (Element e in elements) {
-      // e.getElementsByTagName('a').forEach((e) => e.attributes['href']);
-      // print((e.attributes['title']));
-      String name = e.attributes['title'] ?? "Name is not loaded!";
-      // print(_otakusan + e.attributes['href']!);
-      Uri source = Uri.https(_otakusan, e.attributes['href']!);
-      String img = e.querySelector('img')!.attributes['src'] ?? "Image is not loaded!";
-      list.add(MangaBase(name: name, source: source, img: img));
-    }
-    list.forEach((m) => print(m.source));
-    // return elements.map((e) => {
-    //   MangaBase(name: e.attributes['title'] ?? "Name is not loaded!",
-    //   source: Uri.https(_otakusan, e.attributes['href'] ?? "Null"),
-    //   img: e.querySelector('img')!.attributes['src'] ?? "Image is not loaded!");
-    // }).toList();
-    return list;
+    return elements.map((e) => MangaBase(name: e.attributes['title'] ?? "Name is not loaded!",
+      source: Uri.https(_otakusan, e.attributes['href'] ?? "Null"),
+      img: e.querySelector('img')!.attributes['src'] ?? "Image is not loaded!")).toList();
+    // final List<MangaBase> list = <MangaBase>[];
+    // for (Element e in elements) {
+    //   String name = e.attributes['title'] ?? "Name is not loaded!";
+    //   Uri source = Uri.https(_otakusan, e.attributes['href']!);
+    //   String img = e.querySelector('img')!.attributes['src'] ?? "Image is not loaded!";
+    //   list.add(MangaBase(name: name, source: source, img: img));
+    // }
+    // list.forEach((m) => print(m.source));
+    // return list;
   }
 
   static Future<Document> _loadDocument(Uri uri) async {
@@ -124,23 +106,15 @@ class OtakuSan {
     return html;
   }
 
-  static Future<List<Chapter>> loadChapters({required MangaBase base}) async {
-    final Document doc = await _loadDocument(base.source);
+  static Future<List<Chapter>> getChapters({required MangaBase manga}) async {
+    final Document doc = await _loadDocument(manga.source);
     final List<Element> elements = doc.querySelectorAll('.thrilldown');
-    List<Chapter> chapters = <Chapter>[];
+    final List<Chapter> chapters = <Chapter>[];
     for (Element e in elements) {
       String name = e.text;
       Uri uri = Uri.https(_otakusan, e.attributes['href']!);
       chapters.add(Chapter(name: name, uri: uri));
     }
-    // final List<String> href = _getAttributes(elements: elements, attribute: 'href');
-    // return href.map((m) => Uri.https(_otakusan, m)).toList();
     return chapters;
   }
-  // static Future<List<Uri>> loadChapters({required MangaBase base}) async {
-  //   final Document doc = await _loadDocument(base.source);
-  //   final List<Element> elements = doc.querySelectorAll('.thrilldown');
-  //   final List<String> href = _getAttributes(elements: elements, attribute: 'href');
-  //   return href.map((m) => Uri.https(_otakusan, m)).toList();
-  // }
 }
