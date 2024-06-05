@@ -19,18 +19,13 @@ class OtakuSan {
   // }
 
   static List<String> _getImagesSource(Document doc) {
-    // var list = getResource(doc: doc, query: '.image-wraper img', attribute: 'src');
     final List<Element> elements = doc.querySelectorAll('.image-wraper img');
     return _getAttributes(elements: elements, attribute: 'src');
-    // images.forEach(print);
   }
 
   static void crawl(Uri uri) async {
-    // final Uri uri = Uri.https(_otakusan, '/chapter/1758786/kakkou-no-iinazuke-chap-126');
     final Document doc = await _loadDocument(uri);
-    // var list = getResource(doc: doc, query: '.image-wraper img', attribute: 'src');
-    final List<Element> elements = doc.querySelectorAll('.image-wraper img');
-    final List<String?> attributes = _getAttributes(elements: elements, attribute: 'src');
+    final List<String?> attributes = _getImagesSource(doc);
     attributes.forEach(print);
   }
 
@@ -38,7 +33,7 @@ class OtakuSan {
     final Uri searchUri = Uri.https(_otakusan, '/Home/Search', {'search': name});
     final Document doc = await _loadDocument(searchUri);
     final List<Element> elements = doc.querySelectorAll('.mdl-card--expand.tag a');
-    return _toMangaList(elements);
+    return _mangaListSearch(elements);
   }
 
   static List<String> _getAttributes({required List<Element> elements, required String attribute}) {
@@ -59,10 +54,13 @@ class OtakuSan {
   //   return resources;
   // }
 
-  static List<MangaBase> _toMangaList(List<Element> elements) {
-    return elements.map((e) => MangaBase(name: e.attributes['title'] ?? "Name is not loaded!",
-      source: Uri.https(_otakusan, e.attributes['href'] ?? "Null"),
-      img: e.querySelector('img')!.attributes['src'] ?? "Image is not loaded!")).toList();
+  static List<MangaBase> _mangaListSearch(List<Element> elements) {
+    return elements
+        .map((e) => MangaBase(
+            name: e.attributes['title'] ?? "Name is not loaded!",
+            source: Uri.https(_otakusan, e.attributes['href'] ?? "Null"),
+            img: e.querySelector('img')!.attributes['src'] ?? "Image is not loaded!"))
+        .toList();
     // final List<MangaBase> list = <MangaBase>[];
     // for (Element e in elements) {
     //   String name = e.attributes['title'] ?? "Name is not loaded!";
@@ -106,7 +104,7 @@ class OtakuSan {
     return html;
   }
 
-  static Future<List<Chapter>> getChapters({required MangaBase manga}) async {
+  static Future<List<Chapter>> loadChapters({required MangaBase manga}) async {
     final Document doc = await _loadDocument(manga.source);
     final List<Element> elements = doc.querySelectorAll('.thrilldown');
     final List<Chapter> chapters = <Chapter>[];
@@ -116,5 +114,23 @@ class OtakuSan {
       chapters.add(Chapter(name: name, uri: uri));
     }
     return chapters;
+  }
+
+  static Future<List<Genre>> loadGenres({required MangaBase manga}) async {
+    final Document doc = await _loadDocument(manga.source);
+    final List<Element> elements = doc.querySelectorAll('.thrilldown');
+    final List<Genre> genres = <Genre>[];
+    for (Element e in elements) {
+      String name = e.text;
+      Uri uri = Uri.https(_otakusan, e.attributes['href']!);
+      genres.add(Genre(name: name, uri: uri));
+    }
+    return genres;
+  }
+
+  static Future<Manga> loadMangaInfo({required MangaBase manga}) async {
+    final List<Chapter> chapters = await loadChapters(manga: manga);
+    final List<Genre> genres = await loadGenres(manga: manga);
+    return Manga(name: manga.name, source: manga.source, img: manga.img, chapters: chapters, genres: genres);
   }
 }

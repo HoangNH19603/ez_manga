@@ -8,10 +8,12 @@ void main() async {
   final List<MangaBase> list = await OtakuSan.search(name!);
   stdout.write("choice: ");
   int choice = int.parse(stdin.readLineSync()!);
-  final List<Chapter> chapters = await OtakuSan.getChapters(manga: list[choice - 1]);
-  chapters.forEach((ch) => print(ch.name));
-  stdout.write("Enter chap: ");
-  choice = int.parse(stdin.readLineSync()!);
-  print(chapters[choice - 1].uri);
-  OtakuSan.crawl(chapters[choice - 1].uri);
+  final Manga manga = await OtakuSan.loadMangaInfo(manga: list[choice - 1]);
+  print(manga);
+  // final List<Chapter> chapters = await OtakuSan.loadChapters(manga: list[choice - 1]);
+  // chapters.forEach((ch) => print(ch.name));
+  // stdout.write("Enter chap: ");
+  // choice = int.parse(stdin.readLineSync()!);
+  // print(chapters[choice - 1].uri);
+  // OtakuSan.crawl(chapters[choice - 1].uri);
 }
