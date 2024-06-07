@@ -10,20 +10,13 @@ import 'package:html/dom.dart';
 
 class OtakuSan {
   static const String _otakusan = 'otakusan.net';
-  // static void chapterCrawl(Uri chapter) async {
-  //   final Document doc = await _loadDocument(chapter);
-  //   // var list = getResource(doc: doc, query: '.image-wraper img', attribute: 'src');
-  //   final List<Element> elements = doc.querySelectorAll('.image-wraper img');
-  //   final List<String?> attributes = _getAttributes(elements: elements, attribute: 'src');
-  //   attributes.forEach(print);
-  // }
 
   static List<String> _getImagesSource(Document doc) {
     final List<Element> elements = doc.querySelectorAll('.image-wraper img');
     return _getAttributes(elements: elements, attribute: 'src');
   }
 
-  static void crawl(Uri uri) async {
+  static void read(Uri uri) async {
     final Document doc = await _loadDocument(uri);
     final List<String?> attributes = _getImagesSource(doc);
     attributes.forEach(print);
@@ -39,20 +32,6 @@ class OtakuSan {
   static List<String> _getAttributes({required List<Element> elements, required String attribute}) {
     return elements.map((e) => e.attributes[attribute] ?? "Content is not loaded from document!").toList();
   }
-
-  // static List<String?> getResource({required Document doc, required String query, String? attribute}) {
-  //   final List<String?> resources = [];
-  //   final List<Element> elements = doc.querySelectorAll(query);
-  //   // log attributes
-  //   for (Element e in elements) {
-  //     // e.getElementsByTagName('img').forEach((t) {
-  //     //   print(t.attributes['src']);
-  //     // });
-  //     // print(e.attributes['src']);
-  //     resources.add(e.attributes[attribute]);
-  //   } //  https://stackoverflow.com/questions/66581833/how-to-get-attribute-value-from-attribute-name-in-dart-eventvalidation-from-htm
-  //   return resources;
-  // }
 
   static List<MangaBase> _mangaListSearch(List<Element> elements) {
     return elements
@@ -104,7 +83,7 @@ class OtakuSan {
     return html;
   }
 
-  static Future<List<Chapter>> loadChapters({required MangaBase manga}) async {
+  static Future<List<Chapter>> _loadChapters({required MangaBase manga}) async {
     final Document doc = await _loadDocument(manga.source);
     final List<Element> elements = doc.querySelectorAll('.thrilldown');
     final List<Chapter> chapters = <Chapter>[];
@@ -116,9 +95,9 @@ class OtakuSan {
     return chapters;
   }
 
-  static Future<List<Genre>> loadGenres({required MangaBase manga}) async {
+  static Future<List<Genre>> _loadGenres({required MangaBase manga}) async {
     final Document doc = await _loadDocument(manga.source);
-    final List<Element> elements = doc.querySelectorAll('.thrilldown');
+    final List<Element> elements = doc.querySelectorAll('.tag-link');
     final List<Genre> genres = <Genre>[];
     for (Element e in elements) {
       String name = e.text;
@@ -129,8 +108,8 @@ class OtakuSan {
   }
 
   static Future<Manga> loadMangaInfo({required MangaBase manga}) async {
-    final List<Chapter> chapters = await loadChapters(manga: manga);
-    final List<Genre> genres = await loadGenres(manga: manga);
+    final List<Chapter> chapters = await _loadChapters(manga: manga);
+    final List<Genre> genres = await _loadGenres(manga: manga);
     return Manga(name: manga.name, source: manga.source, img: manga.img, chapters: chapters, genres: genres);
   }
 }

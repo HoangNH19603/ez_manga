@@ -5,4 +5,8 @@ final class Chapter {
   final Uri uri;
 
   const Chapter({required this.name, required this.uri});
+
+  @override
+  String toString() => name;
+
 }

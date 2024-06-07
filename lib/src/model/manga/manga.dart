@@ -8,12 +8,14 @@ class Manga extends MangaBase {
   const Manga({required super.name, required super.source, required super.img, required this.chapters, required this.genres});
 
   String get genresString {
-    String listName = "";
+    List<String> listName = <String>[];
     for (var e in genres) {
-      "$listName${e.name}\t";
+      listName.add(e.toString());
     }
-    return listName;
+    return listName.toString();
   }
+
+  List<Chapter> get reverseChapters => chapters.reversed.toList();
 
   @override
   String toString() => "name: $name\nsource: $source\nimage: $img\nchapters: ${chapters.length}\ngenres: $genresString";

@@ -5,4 +5,8 @@ final class Genre {
   final Uri uri;
 
   const Genre({required this.name, required this.uri});
+
+  @override
+  String toString() => name;
+
 }
