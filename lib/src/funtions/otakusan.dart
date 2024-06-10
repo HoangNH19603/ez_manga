@@ -11,14 +11,15 @@ import 'package:html/dom.dart';
 class OtakuSan {
   static const String _otakusan = 'otakusan.net';
 
-  static List<String> _getImagesSource(Document doc) {
+  static List<Uri> _getImagesSource(Document doc) {
     final List<Element> elements = doc.querySelectorAll('.image-wraper img');
-    return _getAttributes(elements: elements, attribute: 'src');
+    final List<String> imgStr = _getAttributes(elements: elements, attribute: 'src');
+    return imgStr.map(Uri.parse).toList();
   }
 
   static void read(Uri uri) async {
     final Document doc = await _loadDocument(uri);
-    final List<String?> attributes = _getImagesSource(doc);
+    final List<Uri> attributes = _getImagesSource(doc);
     attributes.forEach(print);
   }
 
