@@ -17,10 +17,9 @@ class OtakuSan {
     return imgStr.map(Uri.parse).toList();
   }
 
-  static void read(Uri uri) async {
+  static Future<List<Uri>> read(Uri uri) async {
     final Document doc = await _loadDocument(uri);
-    final List<Uri> attributes = _getImagesSource(doc);
-    attributes.forEach(print);
+    return _getImagesSource(doc);
   }
 
   static Future<List<MangaBase>> search(String name) async {

@@ -6,6 +6,7 @@ import 'package:ez_manga/src/model/manga/manga.dart';
 void main() async {
   final String? name = stdin.readLineSync();
   final List<MangaBase> list = await OtakuSan.search(name!);
+  list.forEach(print);
   stdout.write("choice: ");
   int choice = int.parse(stdin.readLineSync()!);
   final Manga manga = await OtakuSan.loadMangaInfo(manga: list[choice - 1]);
