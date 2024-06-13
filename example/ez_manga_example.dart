@@ -15,5 +15,5 @@ void main() async {
   stdout.write("Enter chap: ");
   choice = int.parse(stdin.readLineSync()!);
   print(manga.chapters[choice - 1].uri);
-  OtakuSan.read(manga.chapters[choice - 1].uri);
+  await OtakuSan.read(manga.chapters[choice - 1].uri).then((chap) => chap.forEach(print));
 }
