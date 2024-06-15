@@ -1,14 +1,14 @@
-// import 'package:ez_manga/ez_manga.dart';
-// import 'package:test/test.dart';
+import 'package:ez_manga/ez_manga.dart';
+import 'package:test/test.dart';
 
-// void main() {
-//   group('A group of tests', () {
-//     setUp(() {
-//       // Additional setup goes here.
-//     });
+void main() {
+  group('A group of tests', () {
+    setUp(() {
+      // Additional setup goes here.
+    });
 
-//     test('First Test', () {
-//       expect(awesome.isAwesome, isTrue);
-//     });
-//   });
-// }
+    test('First Test', () {
+      // expect(awesome.isAwesome, isTrue);
+    });
+  });
+}
