@@ -1,5 +1,3 @@
-import 'package:ez_manga/src/model/manga/manga.dart';
-
 import '../model/model.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;

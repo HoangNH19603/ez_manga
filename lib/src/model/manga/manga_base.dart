@@ -6,7 +6,7 @@ class MangaBase {
   const MangaBase({required this.name, required this.source, required this.img});
 
   @override
-  String toString() => "Name: $name\nSource: $source\nImg: $img";
+  String toString() => name;
 
   @override
   bool operator ==(other) {

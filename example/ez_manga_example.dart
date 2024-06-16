@@ -1,8 +1,6 @@
 import 'package:ez_manga/ez_manga.dart';
 import 'dart:io';
 
-import 'package:ez_manga/src/model/manga/manga.dart';
-
 void main() async {
   // search a manga
   final String? name = stdin.readLineSync();
