@@ -11,9 +11,8 @@ RUN apt-get install -y \
     libstdc++-12-dev
 RUN git clone -b master https://github.com/flutter/flutter.git ../sdk
 RUN echo 'export PATH="/sdk/bin/:$PATH"' >> ~/.bashrc
-# RUN echo $PATH
-# RUN flutter --version
 RUN /sdk/bin/flutter doctor
 COPY . .
 RUN /sdk/bin/dart pub get
-RUN /sdk/bin/dart test
+
+CMD [ "/sdk/bin/dart", "test" ]
