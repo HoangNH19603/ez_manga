@@ -16,3 +16,4 @@ RUN echo 'export PATH="/sdk/bin/:$PATH"' >> ~/.bashrc
 RUN /sdk/bin/flutter doctor
 COPY . .
 RUN /sdk/bin/dart pub get
+RUN /sdk/bin/dart test

@@ -1,7 +1,7 @@
 class MangaBase {
   final String name;
   final Uri source;
-  final String img;
+  final Uri img;
 
   const MangaBase({required this.name, required this.source, required this.img});
 
