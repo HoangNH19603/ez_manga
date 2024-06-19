@@ -1,5 +1,5 @@
 name: ez_manga
-description: A starting point for Dart libraries or applications.
+description: An easy package use to crawl manga from otakusan.net and read manga from Mangadex
 version: 1.0.0
 # repository: https://github.com/my_org/my_repo
 

@@ -16,24 +16,38 @@ know whether this package might be useful for them.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+This is a package that use to crawl manga from otakusan.net and read manga from mangadex
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+V1.0.0: support crawl manga from otakusan (I will update feature read manga from mangadex soon!)
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
 ```dart
-const like = 'sample';
+void main() async {
+  // search a manga
+  final String? name = stdin.readLineSync();
+  final List<MangaBase> list = await OtakuSan.search(name!);
+  list.forEach(print);
+
+  // choose manga
+  stdout.write("choice: ");
+  int choice = int.parse(stdin.readLineSync()!);
+  final Manga manga = await OtakuSan.loadMangaInfo(manga: list[choice - 1]);
+  print(manga);
+
+  // load chapters
+  manga.chapters.forEach(print);
+  stdout.write("Enter chap: ");
+  choice = int.parse(stdin.readLineSync()!);
+
+  // get pages
+  print(manga.chapters[choice - 1].uri);
+  await OtakuSan.read(manga.chapters[choice - 1].uri).then((chap) => chap.forEach(print));
+}
 ```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+This is the package I use to support for my flutter project manga_read
