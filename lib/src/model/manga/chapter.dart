@@ -8,5 +8,4 @@ final class Chapter {
 
   @override
   String toString() => name;
-
 }

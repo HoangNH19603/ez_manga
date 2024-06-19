@@ -9,9 +9,12 @@ void main() {
     setUp(() {
       base = MangaBase(
           name: 'Setup test',
-          source: Uri.parse('https://otakusan.net/manga-detail/15119/tao-muon-tro-thanh-chua-te-bong-toi'),
-          img: Uri.parse('https://imagepi.otakusan.net/extendContent/Manga/15119/7dc8dd9c-447f-4be5-bce1-532e8722f2bc.jpeg'));
-      testSource = Uri.parse('https://otakusan.net/chapter/244902/tao-muon-tro-thanh-chua-te-bong-toi');
+          source: Uri.parse(
+              'https://otakusan.net/manga-detail/15119/tao-muon-tro-thanh-chua-te-bong-toi'),
+          img: Uri.parse(
+              'https://imagepi.otakusan.net/extendContent/Manga/15119/7dc8dd9c-447f-4be5-bce1-532e8722f2bc.jpeg'));
+      testSource = Uri.parse(
+          'https://otakusan.net/chapter/244902/tao-muon-tro-thanh-chua-te-bong-toi');
       print("Setup complete!");
 
       // http.Client client = MockClient((request) async {

@@ -8,5 +8,4 @@ final class Genre {
 
   @override
   String toString() => name;
-
 }

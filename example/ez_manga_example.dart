@@ -20,5 +20,6 @@ void main() async {
 
   // get pages
   print(manga.chapters[choice - 1].uri);
-  await OtakuSan.read(manga.chapters[choice - 1].uri).then((chap) => chap.forEach(print));
+  await OtakuSan.read(manga.chapters[choice - 1].uri)
+      .then((chap) => chap.forEach(print));
 }

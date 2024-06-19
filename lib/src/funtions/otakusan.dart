@@ -16,7 +16,8 @@ class OtakuSan {
   /// Returns a list of [Uri] objects representing the source URIs of the images.
   static List<Uri> _getImagesSource(Document doc) {
     final List<Element> elements = doc.querySelectorAll('.image-wraper img');
-    final List<String> imgStr = _getAttributes(elements: elements, attribute: 'src');
+    final List<String> imgStr =
+        _getAttributes(elements: elements, attribute: 'src');
     return imgStr.map(Uri.parse).toList();
   }
 
@@ -36,7 +37,6 @@ class OtakuSan {
     return _getImagesSource(doc);
   }
 
-
   /// Searches for manga with the given [name] on Otakusan website.
   ///
   /// Returns a [Future] that completes with a list of [MangaBase] objects.
@@ -44,9 +44,11 @@ class OtakuSan {
   /// The search is performed by making a request to the Otakusan website and parsing the response.
   /// The search results are then converted into a list of [MangaBase] objects.
   static Future<List<MangaBase>> search(String name) async {
-    final Uri searchUri = Uri.https(_otakusan, '/Home/Search', {'search': name});
+    final Uri searchUri =
+        Uri.https(_otakusan, '/Home/Search', {'search': name});
     final Document doc = await _loadDocument(searchUri);
-    final List<Element> elements = doc.querySelectorAll('.mdl-card--expand.tag a');
+    final List<Element> elements =
+        doc.querySelectorAll('.mdl-card--expand.tag a');
     return _mangaListSearch(elements);
   }
 
@@ -58,9 +60,14 @@ class OtakuSan {
   /// If an element does not have the specified attribute, the default value "Content is not loaded from document!" is used.
   ///
   /// Returns a list of strings representing the extracted attributes.
-  static List<String> _getAttributes({required List<Element> elements, required String attribute}) {
-    return elements.map((e) => e.attributes[attribute] ?? "Content is not loaded from document!").toList();
+  static List<String> _getAttributes(
+      {required List<Element> elements, required String attribute}) {
+    return elements
+        .map((e) =>
+            e.attributes[attribute] ?? "Content is not loaded from document!")
+        .toList();
   }
+
   /// Converts a list of HTML elements into a list of MangaBase objects.
   ///
   /// The [elements] parameter is a list of HTML elements representing manga items.
@@ -73,7 +80,8 @@ class OtakuSan {
     for (Element e in elements) {
       String name = e.attributes['title'] ?? "Name is not loaded!";
       Uri source = Uri.https(_otakusan, e.attributes['href'] ?? "Null");
-      Uri img = Uri.parse(e.querySelector('img')?.attributes['src'] ?? "Image is not loaded!");
+      Uri img = Uri.parse(
+          e.querySelector('img')?.attributes['src'] ?? "Image is not loaded!");
       mangaList.add(MangaBase(name: name, source: source, img: img));
     }
     return mangaList;
@@ -194,6 +202,11 @@ class OtakuSan {
   static Future<Manga> loadMangaInfo({required MangaBase manga}) async {
     final List<Chapter> chapters = await _loadChapters(manga: manga);
     final List<Genre> genres = await _loadGenres(manga: manga);
-    return Manga(name: manga.name, source: manga.source, img: manga.img, chapters: chapters, genres: genres);
+    return Manga(
+        name: manga.name,
+        source: manga.source,
+        img: manga.img,
+        chapters: chapters,
+        genres: genres);
   }
 }

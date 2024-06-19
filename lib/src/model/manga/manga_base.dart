@@ -3,7 +3,8 @@ class MangaBase {
   final Uri source;
   final Uri img;
 
-  const MangaBase({required this.name, required this.source, required this.img});
+  const MangaBase(
+      {required this.name, required this.source, required this.img});
 
   @override
   String toString() => name;
